@@ -30,10 +30,12 @@ Search for anything:
 python .\simple_search_engine.py "Lehlohonolo Adolf Matobakele"
 ```
 
+If you do not specify `--limit`, the app shows 5 results by default.
+
 Search for a title or topic:
 
 ```powershell
-python .\simple_search_engine.py "Python web scraping tutorial" --limit 5
+python .\simple_search_engine.py "Python web scraping tutorial" --limit 12
 ```
 
 Prompt mode:

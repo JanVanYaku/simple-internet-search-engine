@@ -31,6 +31,7 @@ console = Console()
 
 SEARCH_URL = "https://html.duckduckgo.com/html/"
 USER_AGENT = "SimpleInternetSearchEngine/1.0 (+https://github.com/JanVanYaku)"
+DEFAULT_RESULT_LIMIT = 5
 
 
 @dataclass
@@ -245,7 +246,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser = argparse.ArgumentParser(description="Simple command-line internet search engine.")
     parser.add_argument("query", nargs="*", help="Words to search for. If omitted, the app prompts you.")
-    parser.add_argument("--limit", type=int, default=10, help="Number of results to show. Default: 10.")
+    parser.add_argument(
+        "--limit",
+        type=int,
+        help=f"Number of results to show. Default: {DEFAULT_RESULT_LIMIT}.",
+    )
     parser.add_argument("--timeout", type=float, default=15.0, help="HTTP timeout in seconds.")
     parser.add_argument("--site", help="Restrict search to a domain, for example wikipedia.org.")
     parser.add_argument("--open-first", action="store_true", help="Open the first result in your browser.")
@@ -267,7 +272,10 @@ def main() -> int:
     if args.site:
         query = f"{query} site:{args.site}"
 
-    limit = max(1, min(args.limit, 30))
+    limit = args.limit if args.limit is not None else DEFAULT_RESULT_LIMIT
+    if limit < 1:
+        console.print("[red]--limit must be 1 or greater.[/red]")
+        return 1
     console.print(
         Panel(
             f"Query: [bold]{query}[/bold]\nLimit: [bold]{limit}[/bold]\nSource: DuckDuckGo HTML results",
